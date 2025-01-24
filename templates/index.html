@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таймер</title>
+</head>
+<body>
+    <h1>Таймер</h1>
+    <input type="number" id="minutes" placeholder="Минуты">
+    <button id="start">Запустить</button>
+    <h2 id="timer-display">00:00</h2>
+
+    <script>
+        let timer;
+
+        document.getElementById('start').addEventListener('click', () => {
+            const minutes = parseInt(document.getElementById('minutes').value);
+            if (isNaN(minutes) || minutes <= 0) {
+                alert("Введите количество минут!");
+                return;
+            }
+
+            const endTime = Date.now() + minutes * 60 * 1000;
+            clearInterval(timer);
+
+            timer = setInterval(() => {
+                const remainingTime = endTime - Date.now();
+                if (remainingTime <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('timer-display').textContent = "Время вышло!";
+
+                    // Отправка уведомления через backend
+                    fetch('/notify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `chat_id=12345678&message=Время вышло!`
+                    });
+                } else {
+                    const mins = Math.floor(remainingTime / 1000 / 60);
+                    const secs = Math.floor((remainingTime / 1000) % 60);
+                    document.getElementById('timer-display').textContent =
+                        `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
