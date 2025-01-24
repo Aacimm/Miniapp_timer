@@ -13,7 +13,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == '__main__':
-    # Инициализация приложения
+    # Инициализация приложения телеграм
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
     # Добавление обработчика команды /start
