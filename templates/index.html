@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web3 Таймер</title>
+    <title>Удобный Таймер</title>
     <style>
         body {
             margin: 0;
@@ -13,111 +13,166 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #d4e6f1, #a9cce3);
             font-family: 'Roboto', sans-serif;
-            color: #ffffff;
-            overflow: hidden;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            color: #00ffc6;
-            text-shadow: 0 0 10px #00ffc6, 0 0 20px #00ffc6;
+            color: #34495e;
+        }
+
+        p {
+            font-size: 1rem;
             margin-bottom: 20px;
+            color: #5d6d7e;
         }
 
         input[type="number"] {
-            width: 200px;
+            width: 80%;
+            max-width: 300px;
             padding: 10px;
-            border: none;
+            border: 1px solid #aeb6bf;
             border-radius: 10px;
             font-size: 1.2rem;
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 255, 198, 0.5);
+            background: #f4f6f7;
+            color: #2c3e50;
             outline: none;
             margin-bottom: 20px;
         }
 
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
         button {
             padding: 10px 20px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #ffffff;
-            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            background: #85c1e9;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 106, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         button:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 106, 0, 0.8);
+            box-shadow: 0 4px 10px rgba(133, 193, 233, 0.8);
         }
 
         #timer-display {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
-            color: #ff6a00;
-            text-shadow: 0 0 10px #ff6a00, 0 0 20px #ff6a00;
+            margin-top: 20px;
+            color: #5dade2;
         }
 
-        .neon-border {
-            border: 2px solid;
-            border-image-slice: 1;
-            border-width: 2px;
-            border-image-source: linear-gradient(90deg, #ff6a00, #ee0979);
-            padding: 15px;
-            border-radius: 15px;
+        .progress-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#5dade2 0%, #e8f8f5 0%);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes backgroundMove {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 100% 100%;
-            }
+        .progress-circle span {
+            font-size: 2rem;
+            color: #34495e;
         }
     </style>
 </head>
 <body>
-    <div class="neon-border" align="center">
-        <h1>RR Таймер</h1>
-        <input type="number" id="minutes" placeholder="Введите минуты"> <br>
-        <button id="start">Запустить</button>
-        <h2 id="timer-display" align="center">00:00</h2>
+    <div class="container">
+        <h1>Личный Таймер</h1>
+        <p>Введите время в минутах и начните фокусироваться на задаче!</p>
+        <input type="number" id="minutes" placeholder="Введите минуты">
+        <div class="buttons">
+            <button id="start">Старт</button>
+            <button id="pause">Пауза</button>
+            <button id="reset">Сброс</button>
+        </div>
+        <div class="progress-circle">
+            <span id="time">00:00</span>
+        </div>
+        <div id="timer-display">Ожидание...</div>
     </div>
 
     <script>
         let timer;
+        let remainingTime;
+        let isPaused = false;
 
-        document.getElementById('start').addEventListener('click', () => {
+        const startButton = document.getElementById('start');
+        const pauseButton = document.getElementById('pause');
+        const resetButton = document.getElementById('reset');
+        const timeDisplay = document.getElementById('time');
+        const timerDisplay = document.getElementById('timer-display');
+
+        startButton.addEventListener('click', () => {
             const minutes = parseInt(document.getElementById('minutes').value);
             if (isNaN(minutes) || minutes <= 0) {
-                alert("Введите количество минут!");
+                alert("Введите корректное время!");
                 return;
             }
 
-            const endTime = Date.now() + minutes * 60 * 1000;
+            if (!isPaused) {
+                remainingTime = minutes * 60 * 1000;
+            }
+
+            const endTime = Date.now() + remainingTime;
             clearInterval(timer);
 
             timer = setInterval(() => {
-                const remainingTime = endTime - Date.now();
-                if (remainingTime <= 0) {
+                const currentTime = endTime - Date.now();
+                remainingTime = currentTime;
+
+                if (currentTime <= 0) {
                     clearInterval(timer);
-                    document.getElementById('timer-display').textContent = "Время вышло!";
-                } else {
-                    const mins = Math.floor(remainingTime / 1000 / 60);
-                    const secs = Math.floor((remainingTime / 1000) % 60);
-                    document.getElementById('timer-display').textContent =
-                        `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    timeDisplay.textContent = "00:00";
+                    timerDisplay.textContent = "Время вышло!";
+                    return;
                 }
+
+                const mins = Math.floor(currentTime / 1000 / 60);
+                const secs = Math.floor((currentTime / 1000) % 60);
+                timeDisplay.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             }, 1000);
+
+            timerDisplay.textContent = "Таймер запущен!";
+            isPaused = false;
+        });
+
+        pauseButton.addEventListener('click', () => {
+            clearInterval(timer);
+            timerDisplay.textContent = "Таймер на паузе.";
+            isPaused = true;
+        });
+
+        resetButton.addEventListener('click', () => {
+            clearInterval(timer);
+            timeDisplay.textContent = "00:00";
+            timerDisplay.textContent = "Ожидание...";
+            document.getElementById('minutes').value = '';
+            isPaused = false;
         });
     </script>
 </body>
