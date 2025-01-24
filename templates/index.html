@@ -3,13 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Таймер</title>
+    <title>Web3 Таймер</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            color: #00ffc6;
+            text-shadow: 0 0 10px #00ffc6, 0 0 20px #00ffc6;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            width: 200px;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 255, 198, 0.5);
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ff6a00, #ee0979);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 106, 0, 0.5);
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 106, 0, 0.8);
+        }
+
+        #timer-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff6a00;
+            text-shadow: 0 0 10px #ff6a00, 0 0 20px #ff6a00;
+        }
+
+        .neon-border {
+            border: 2px solid;
+            border-image-slice: 1;
+            border-width: 2px;
+            border-image-source: linear-gradient(90deg, #ff6a00, #ee0979);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        @keyframes backgroundMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Таймер</h1>
-    <input type="number" id="minutes" placeholder="Минуты">
-    <button id="start">Запустить</button>
-    <h2 id="timer-display">00:00</h2>
+    <div class="neon-border" align="center">
+        <h1>RR Таймер</h1>
+        <input type="number" id="minutes" placeholder="Введите минуты"> <br>
+        <button id="start">Запустить</button>
+        <h2 id="timer-display" align="center">00:00</h2>
+    </div>
 
     <script>
         let timer;
@@ -29,13 +111,6 @@
                 if (remainingTime <= 0) {
                     clearInterval(timer);
                     document.getElementById('timer-display').textContent = "Время вышло!";
-
-                    // Отправка уведомления через backend
-                    fetch('/notify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `chat_id=12345678&message=Время вышло!`
-                    });
                 } else {
                     const mins = Math.floor(remainingTime / 1000 / 60);
                     const secs = Math.floor((remainingTime / 1000) % 60);

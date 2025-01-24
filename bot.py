@@ -6,7 +6,7 @@ BOT_TOKEN = '7241854328:AAEIeZYqcB3n58GGJGCnn4wkXWBD0u5C5dE'
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("Открыть Таймер", web_app={"url": "https://ВАШ_СЕРВЕР"})]
+        [InlineKeyboardButton("Открыть Таймер", web_app={"url": "https://miniapp-timer.onrender.com"})]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Запусти таймер!", reply_markup=reply_markup)
