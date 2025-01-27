@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 BOT_TOKEN = "7851178513:AAHDfs2Jtd3ld6zheQ1je64KwjXDRYk9izk"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Кнопка для открытия вашего сайта
+    # Кнопка для открытия сервиса результатов RR
     keyboard = [
         [InlineKeyboardButton("Посмотреть результаты событий", web_app={"url": "https://results.russiarunning.com/"})]
     ]
